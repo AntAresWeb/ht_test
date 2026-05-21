@@ -1,0 +1,8 @@
+# .dockerignore
+.venv
+.git
+.gitignore
+__pycache__
+*.pyc
+*.log
+.env # Если не хочешь копировать .env в образ (лучше передавать через docker-compose)
