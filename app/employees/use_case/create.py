@@ -18,7 +18,7 @@ class CreateEmployeeForDepartmentUseCase(BaseUseCase):
             if await uow.departments.get_by_id(department_id) is None:
                 raise DepartmentNotFoundError(id=department_id)
 
-            if await uow.employees.get_by_departmentid_and_name(
+            if await uow.employees.get_by_department_id_and_name(
                 department_id=department_id,
                 employee_name=full_name,
             ) is not None:

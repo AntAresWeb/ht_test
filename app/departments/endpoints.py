@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Depends, Query, status
 
 from app.core.container import (
     CreateDepartmentUseCase,
@@ -65,14 +65,14 @@ async def patch(
     )
 
 
-@router.delete("/{id}")
+@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete(
     id: int,
     query_parameters: Annotated[DepartmentDeleteQuery, Query()],
     use_cases: Annotated[DeleteDepartmentUseCase, Depends(delete_department_ucr)],
 ) -> None:
-    use_cases.execute(
+    await use_cases.execute(
         department_id=id,
         mode=query_parameters.mode,
-        reassign_to_department_id=query_parameters.reassign_to_department_id,
+        reassign_to_id=query_parameters.reassign_to_department_id,
     )

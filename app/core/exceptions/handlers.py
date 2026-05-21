@@ -4,9 +4,11 @@ from fastapi.responses import JSONResponse
 from app.core.exceptions.exceptions import (
     AppExceptionError,
     DepartmentCycleError,
-    DepartmentHasEmployeesError,
+#    DepartmentHasEmployeesError,
     DepartmentNameConflictError,
     DepartmentNotFoundError,
+    DepartmentReassignError,
+    DepartmentSelfParentError,
     EmployeeAlreadyExistsError,
     EmployeeNotFoundError,
     InvalidParentError,
@@ -57,6 +59,28 @@ async def circular_move_error_handler(
     )
 
 
+@registry.register(DepartmentReassignError)
+async def department_reassign_error_handler(
+    _: Request,
+    exc: DepartmentReassignError,
+) -> JSONResponse:
+    return JSONResponse(
+        status_code=status.HTTP_409_CONFLICT,
+        content={"error": {"message": exc.message}},
+    )
+
+
+@registry.register(DepartmentSelfParentError)
+async def department_self_parent_error_handler(
+    _: Request,
+    exc: DepartmentSelfParentError,
+) -> JSONResponse:
+    return JSONResponse(
+        status_code=status.HTTP_409_CONFLICT,
+        content={"error": {"message": exc.message}},
+    )
+
+
 @registry.register(InvalidParentError)
 async def invalid_parent_handler(
     _: Request,
@@ -68,15 +92,15 @@ async def invalid_parent_handler(
     )
 
 
-@registry.register(DepartmentHasEmployeesError)
-async def department_has_employees_handler(
-    _: Request,
-    exc: DepartmentHasEmployeesError,
-) -> JSONResponse:
-    return JSONResponse(
-        status_code=status.HTTP_400_BAD_REQUEST,
-        content={"error": {"message": exc.message}},
-    )
+# @registry.register(DepartmentHasEmployeesError)
+# async def department_has_employees_handler(
+#     _: Request,
+#     exc: DepartmentHasEmployeesError,
+# ) -> JSONResponse:
+#     return JSONResponse(
+#         status_code=status.HTTP_400_BAD_REQUEST,
+#         content={"error": {"message": exc.message}},
+#     )
 
 
 @registry.register(EmployeeNotFoundError)
@@ -92,7 +116,7 @@ async def employee_not_found_handler(
 @registry.register(EmployeeAlreadyExistsError)
 async def employee_already_exists_handler(
     _: Request,
-    exc: EmployeeNotFoundError,
+    exc: EmployeeAlreadyExistsError,
 ) -> JSONResponse:
     return JSONResponse(
         status_code=status.HTTP_409_CONFLICT,

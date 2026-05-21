@@ -32,6 +32,10 @@ class DepartmentCycleError(AppExceptionError):
     message_template = "Попытка переместить подразделение внутрь собственного поддерева (создание цикла)."
 
 
+class DepartmentReassignError(AppExceptionError):
+    message_template = "Попытка удаляемое подразделение сделать принимающим."
+
+
 class InvalidParentError(AppExceptionError):
     message_template = "Попытка сделать родителем несуществующее подразделение с id={id}."
 
@@ -44,8 +48,8 @@ class DepartmentSelfParentError(AppExceptionError):
     message_template = "Попытка сделать родителем самого себя."
 
 
-class DepartmentHasEmployeesError(AppExceptionError):
-    message_template="Нельзя удалить подразделение, так как в нем есть сотрудники (без режима reassign)."
+# class DepartmentHasEmployeesError(AppExceptionError):
+#     message_template="Нельзя удалить подразделение, так как в нем есть сотрудники (без режима reassign)."
 
 # Исключения для Employee
 

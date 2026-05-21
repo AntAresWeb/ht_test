@@ -1,4 +1,4 @@
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlalchemy.sql.expression import literal
 
 from app.core.repository import BaseRepository
@@ -82,3 +82,20 @@ class DepartmentRepository(BaseRepository[Department]):
 
         result = await self.session.execute(stmt)
         return result.scalars().all()
+
+
+    async def bulk_reassign_children_parents(
+        self,
+        from_department_id: int,
+        to_department_id: int,
+    ) -> None:
+        """
+        Пакетно обновляет department_id для всех сотрудников указанного отдела.
+        """
+        stmt = (
+            update(self._model)
+            .where(self._model.parent_id == from_department_id)
+            .values(parent_id=to_department_id)
+            .execution_options(synchronize_session=False)
+        )
+        await self.session.execute(stmt)
